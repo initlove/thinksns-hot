@@ -1,0 +1,36 @@
+<div class="pollBox">
+  <div class="LogList">
+    <ul class="search">
+      <volist name="data" id="vo">
+        <li class="lineD_btm" id="event_{$vo['id']}">
+          <div class="left"><span><a href="{:U('event/Index/eventDetail', array('id'=>$vo['id'], 'uid'=>$vo['uid']))}"><img src="{$vo['cover']}" width="100" height="100"/></a></span></div>
+          <div style="margin:0 70px 0 115px;">
+            <h3><a href="{:U('//eventDetail', array('id'=>$vo['id'], 'uid'=>$vo['uid']))}">{$vo['title']}</a> <span class="cGray2">[{$vo['type']}]</span></h3>
+            <p><span class="cGray2">活动时间：</span>[{$vo['time']}] </p>
+            <p><span class="cGray2">活动地点：</span>{$vo['address']} {$vo['area']}</p>
+            <p><span class="cGray2">发起人：</span>{$vo['user_info']['space_link']}</p>
+            <php> if( false == empty( $vo['users'] ) ){ </php>
+            <!--<p><span class="cGray2">参与者：</span>
+            <php>$vo['users'];</php>
+              <php> 
+              $_i=0;
+              //dump($vo['users']);
+              foreach( $vo['users'] as $so ) {
+                $_i++;
+                if($_i++ <17){
+              </php>
+              <a href="{:U('public/Profile/',array('uid'=>$so['uid']))}" >{$so['uid']|getUserName}</a> &nbsp;
+              <php> }}</php>
+              <php>if(count($vo['users']) > 8){</php>
+              <a href="{:U('//member', array('id'=>$vo['id'],'action'=>'join'))}">更多>></a>
+              <php>}</php>
+            </p>-->
+            <php> } </php>
+            <p><span class=" mr10"><?php if($vo['opts']['allow'] && $vo['uid'] == $mid) echo "待审人数（".$vo['verifyCount']."）";?> 参加人数（{$vo['joinCount']}） 关注人数（{$vo['attentionCount']}）</span></p>
+          </div>
+        </li>
+      </volist>
+    </ul>
+    <div id="Pagination" class="page">{$html}</div>
+  </div>
+</div>
