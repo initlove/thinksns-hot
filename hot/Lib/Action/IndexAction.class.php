@@ -17,6 +17,8 @@ class IndexAction extends Action
  	        $this->event = D( 'Event','event' );
 	        $is_hot_list = $this->event->getHotList();
 	        $this->assign('is_hot_list',$is_hot_list);
+
+			
 	}
 
 	public function index()
@@ -35,9 +37,12 @@ class IndexAction extends Action
 		$this->setTitle( $title );
 		$this->setKeywords( $title );
 		$this->setDescription( implode(',', $cate) );
-
-	        $result  = $this->event->getEventList($map,$order,$this->mid,$_GET['order']);
+//DLIANG: we get the event list or hot list here, so the image was assigned here
+	        $result  = $this->event->getEventList($map,$order,$this->mid,$_GET['order'],200,200);
                 $this->assign($result);
+
+		$weiba_list = D('Weiba', 'weiba')->getWeibaList(3);
+		$this->assign('weiba', $weiba_list);
 
 		$this->display();
 	}
@@ -56,4 +61,22 @@ class IndexAction extends Action
 		//dump($list[$id]['child']);
 		exit(json_encode($list[$id]['child']));
 	}
+
+        /**
+         * 热帖推荐
+         * @param integer limit 获取微吧条数
+         * @return void
+         */
+        private function _post_recommend($limit){
+                $db_prefix = C('DB_PREFIX');
+                $sql = "SELECT a.* FROM `{$db_prefix}weiba_post` a, `{$db_prefix}weiba` b WHERE a.weiba_id=b.weiba_id AND ( b.`is_del` = 0 ) AND ( a.`recommend` = 1 ) AND ( a.`is_del` = 0 ) ORDER BY a.recommend_time desc LIMIT ".$limit;
+                $post_recommend = D('weiba_post')->query($sql);
+                $weiba_ids = getSubByKey($post_recommend, 'weiba_id');
+                $nameArr = $this->_getWeibaName($weiba_ids);
+                foreach($post_recommend as $k=>$v){
+                        $post_recommend[$k]['weiba'] = $nameArr[$v['weiba_id']];
+                }
+                $this->assign('post_recommend',$post_recommend);
+        }
+
 }
